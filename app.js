@@ -1,4 +1,3 @@
-var createError = require('http-errors');
 var express = require('express');
 var logger = require('morgan');
 var savingsRouter = require('./routes/savings');

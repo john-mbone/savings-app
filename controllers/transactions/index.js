@@ -32,7 +32,11 @@ exports.transactionsHistory = async function (req, res) {
         }
     })
 
-    await createXLXS(result, res)
+    if (result.length !== 0) {
+        await createXLXS(result, res)
+    } else {
+        res.json({ status: false, pages: Math.ceil(pages), count, result })
+    }
     // res.json({ status: true, pages: Math.ceil(pages), count, result })
 }
 
@@ -74,14 +78,20 @@ exports.transactionsHistoryWithRange = async function (req, res) {
         }
     })
 
-    await createXLXS(result, res)
+
+
+    if (result.length !== 0) {
+        await createXLXS(result, res)
+    } else {
+        res.json({ status: false, pages: Math.ceil(pages), count, result })
+    }
     // res.json({ status: true, pages: Math.ceil(pages), count, result })
 }
 
 
 
 
-const createXLXS = async (transactions) => {
+const createXLXS = async (transactions, res) => {
     const workbook = new excelJS.Workbook();  // Create a new workbook
 
     const worksheet = workbook.addWorksheet(`Transactions`); // New Worksheet
