@@ -38,9 +38,13 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING(256),
       allowNull: false
-    }
+    },
+    lastLogin: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
   }, {
-    sequelize,
+    sequelize, 
     modelName: 'members',
   });
   return members;

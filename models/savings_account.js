@@ -22,6 +22,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    last_savings_date: {
+      type: DataTypes.STRING,
+      defaultValue: '',
+      allowNull: true
+    },
     account_balance: {
       type: DataTypes.FLOAT,
       defaultValue: 0,

@@ -18,4 +18,9 @@ const controller = require('../../controllers/members')
 */
 router.post('/register', controller.register)
 
+/*
+* Authenticate user with JWT
+*/
+router.post('/authenticate', controller.signIn)
+
 module.exports = router
