@@ -15,7 +15,7 @@ exports.fDateTimeSuffix = (date) => {
 }
 
 exports.fDateTimeSuffixShort = (date) => {
-  return format(new Date(date), 'dd-MM-yyyy');
+  return format(new Date(date), 'yyyy-MM-dd');
 }
 
 exports.fToNow = (date) => {

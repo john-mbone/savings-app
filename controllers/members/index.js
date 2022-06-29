@@ -24,7 +24,7 @@ exports.register = async (req, res) => {
 
         if (exist) {
             // username exists
-            res.json({ status: false, message: 'Username already in use.' })
+            res.status(409).json({ status: false, message: "User Already Exist. Please Login" })
         } else {
             const userPassword = await hashPassword(password)
 
@@ -47,7 +47,7 @@ exports.register = async (req, res) => {
 
             });
 
-            res.json({ status: true, message: 'Registration was successful.', data })
+            res.status(201).json({ status: true, message: 'Registration was successful.', data })
         }
 
     } else {
