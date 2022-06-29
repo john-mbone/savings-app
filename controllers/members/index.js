@@ -1,10 +1,6 @@
 const { members, savings_account, sequelize } = require('../../models')
 const { hashPassword, comparePassword, generateAccessToken } = require('../../utils/security')
 
-const redisServer = require('ioredis')
-
-const redis = new redisServer()
-
 exports.register = async (req, res) => {
     const { username, name, password } = req.body
 
@@ -51,7 +47,7 @@ exports.register = async (req, res) => {
         }
 
     } else {
-        res.status(403).json({ status: false, message: 'Invalid request' })
+        res.status(400).json({ status: false, message: 'Invalid request' })
     }
 
 }
@@ -91,16 +87,6 @@ exports.signIn = async (req, res) => {
                     return savings_accounts
                 })
 
-
-                // Lets cache last savings date if its not empty to help us return qr on savings
-
-                const entry_id = `last-savings-on-${account.id}`
-                console.log(entry_id);
-                await redis.set(entry_id,account.last_savings_date)
-
- 
-
-
                 /**
                  * Lets store savings_id in claims
                  */
@@ -125,7 +111,7 @@ exports.signIn = async (req, res) => {
         }
 
     } else {
-        res.status(403).json({ status: false, message: 'Invalid request' })
+        res.status(400).json({ status: false, message: 'Invalid request' })
     }
 
 }

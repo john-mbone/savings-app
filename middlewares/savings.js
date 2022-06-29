@@ -1,12 +1,15 @@
 
 const redis = require('ioredis')
-const moment = require('moment');
-const { fDateTimeSuffixShort } = require('../utils/formatTime');
 
 const client = new redis()
 
 // check if user had saved today
 const dateCache = async (req, res, next) => {
+    const { amount, date } = req.body
+    if (!(amount && date)) {
+        return res.status(400).json({ status: false, message: 'Bad Request' })
+    }
+
     const savings_id = req.savings_id;
 
     let _id = `last-savings-on-${savings_id}`
@@ -14,24 +17,20 @@ const dateCache = async (req, res, next) => {
     await client.get(_id, (error, result) => {
         if (error) throw error;
         if (result !== null) {
-            // Validate if date string is valid
-            if (moment(new Date(result), "YYYY-MM-DD", true).isValid()) {
-                // get current time for comparison with assumed old time
-                const current_time = new Date(fDateTimeSuffixShort(new Date())).getTime()
-                const old_time = new Date(result).getTime()
-                if (current_time > old_time) {
-                    res.status(409).json({ status: false, current_time, message: 'You had already saved today.' })
-                } else {
-                    next()
-                }
-            } else {
+            const storedTime = new Date(result).getTime()
+            const entryTime = new Date(date).getTime()
+            if (storedTime < entryTime) {
                 next()
+            } else if (storedTime > entryTime) {
+                res.json({ status: false, message: `You can not save for the past days` })
+            }else{
+                res.json({ status: false, message: `You have already saved for this day.` })
             }
-
         } else {
-            return next();
+            next();
         }
     });
+
 };
 
 
