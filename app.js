@@ -4,24 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
-const Redis = require('ioredis');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
-const client = new Redis()
-client.set('redis-1','Tested','ex',10)
-const cache = (req, res, next) => {
-  const id = 'redis-1';
-  client.get(id, (error, result) => { 
-    if (error) throw error;
-    if (result !== null) {
-      return res.send(result);
-    } else {
-      return next();
-    }
-  });
-};
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -36,7 +22,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.use('/', cache, indexRouter);
+app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
