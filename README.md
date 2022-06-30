@@ -2,7 +2,19 @@
 
 Run tests in order right from creating an account then to savings
 
+
+run
+npm install
+
+sequelize db:create
+
+sequelize db:migrate
+
+
 --- .env-----
+
+
+
 PORT=9000
 REDIS_PORT=6379
 NODE_ENV=development
