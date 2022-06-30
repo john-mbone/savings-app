@@ -1,11 +1,11 @@
 const { transaction } = require('../../models')
 const moment = require('moment')
 const { Op } = require('sequelize')
-const fs = require('fs')
-const excelJS = require("exceljs")
-const { fDateTimeSuffix } = require('../../utils/formatTime')
+const { createXLXS } = require('../../utils/common')
 
+const Redis = require('ioredis')
 
+const redis = new Redis()
 // http://localhost:9000/transactions?page=1&page_size=2
 
 exports.transactionsHistory = async function (req, res) {
@@ -81,6 +81,8 @@ exports.transactionsHistoryWithRange = async function (req, res) {
 
 
     if (result.length !== 0) {
+        let key_ = `${savings_id}_${from.replaceAll('-', '_')}_${to.replaceAll('-', '_')}`
+        await redis.set(key_, JSON.stringify(result))
         await createXLXS(result, res)
     } else {
         res.json({ status: false, pages: Math.ceil(pages), count, result })
@@ -91,40 +93,3 @@ exports.transactionsHistoryWithRange = async function (req, res) {
 
 
 
-const createXLXS = async (transactions, res) => {
-    const workbook = new excelJS.Workbook();  // Create a new workbook
-
-    const worksheet = workbook.addWorksheet(`Transactions`); // New Worksheet
-
-    worksheet.columns = [
-        { header: "Transaction ID.", key: "id", width: 10 },
-        { header: "Savings Amount", key: "amount", width: 10 },
-        { header: "Narration", key: "narration", width: 20 },
-        { header: "Transaction Time", key: "createdAt", width: 20 }
-    ]
-
-    for (const row of transactions) {
-        worksheet.addRow(row)
-    }
-
-    // Make row 0 bold
-    worksheet.getRow(1).eachCell((cell) => {
-        cell.font = { bold: true, size: 14 };
-    });
-
-    try {
-        const path = "./downloads";
-        const file_name = `${path}/transactions.xlsx`
-        await workbook.xlsx.writeFile(file_name)
-        res.json({
-            status: true,
-            message: "File exported successfully.",
-            file_location: file_name,
-        });
-    } catch (error) {
-        res.json({
-            status: false,
-            message: error.message,
-        });
-    }
-}
