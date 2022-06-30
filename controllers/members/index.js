@@ -104,7 +104,7 @@ exports.signIn = async (req, res) => {
                     access_token
                 })
             } else {
-                res.json({ status: false, message: 'Invalid username or password.' })
+                res.status(401).json({ status: false, message: 'Invalid username or password.' })
             }
         } else {
             res.status(401).json({ status: false, message: 'Invalid username or password.' })

@@ -6,8 +6,6 @@ const controller = require('../../controllers/transactions')
 
 const middleware = require('../../middlewares/transactions')
 
-const redis = require('ioredis')
-
 // List Transactions
 /**
  * 

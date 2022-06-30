@@ -22,9 +22,9 @@ const dateCache = async (req, res, next) => {
             if (storedTime < entryTime) {
                 next()
             } else if (storedTime > entryTime) {
-                res.json({ status: false, message: `You can not save for the past days` })
+                res.status(409).json({ status: false, message: `You can not save for the past days` })
             }else{
-                res.json({ status: false, message: `You have already saved for this day.` })
+                res.status(409).json({ status: false, message: `You have already saved for this day.` })
             }
         } else {
             next();

@@ -1,5 +1,5 @@
 const { Op } = require("sequelize")
-const { sequelize, transaction } = require("../../models")
+const { sequelize, transaction, savings_account } = require("../../models")
 const { fDateTimeSuffixShort } = require("../../utils/formatTime")
 const moment = require('moment')
 const Redis = require('ioredis')
@@ -50,7 +50,7 @@ exports.save = async (req, res) => {
                 order: [['id', 'DESC']]
             })
 
-            if (oldTransactions) {
+            if (oldTransactions.length > 0) {
                 await redis.set(`last-savings-on-${savings_id}`, moment(oldTransactions[0].createdAt).format('YYYY-MM-DD'))
                 return res.json({ status: true, message: `You have already saved for ${comparer}` })
             } else {
@@ -62,13 +62,23 @@ exports.save = async (req, res) => {
                         narration
                     }, { transaction: t })
 
+                    if (trx) {
+                        await savings_account.increment({
+                            account_balance: amount,
+                            total_deposits_derived: amount
+                        }, {
+                            where: {
+                                id: savings_id
+                            }
+                        }, { t })
+                    }
                     return trx
                 })
 
                 // Add Key to redis
 
                 await redis.set(`last-savings-on-${savings_id}`, moment(savingTransaction.createdAt).format('YYYY-MM-DD'))
-                res.json({ status: true, message: 'You have successfully saved.' })
+                res.status(201).json({ status: true, message: 'You have successfully saved.' })
             }
 
         }
