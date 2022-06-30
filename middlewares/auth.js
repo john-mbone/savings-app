@@ -13,7 +13,7 @@ const verifySession = (req, res, next) => {
         req.savings_id = verified.claims.savings_id
         next()
     } else {
-        res.status(401).json({ status: false, message: "A token is required for authentication" ,verified})
+        res.status(401).json({ status: false, message: "A token is required for authentication" })
     }
 }
 
