@@ -9,7 +9,7 @@ chai.expect()
 //configure chai to use chai-http
 chai.use(chaiHttp)
 
-const access_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzYXZpbmdzX2lkIjoxLCJpYXQiOjE2NTY2MTcyNTUsImV4cCI6MTY1NjYyNjg1NX0.LYzeAvkUalabCly1lRBF4KiABk014Reyq5iq95tPd5c'
+const access_token = '{{access_token}}'  // Provide decryption KEY on auth middleware to test since it gets the data from .env
 
 describe('Registration and Authentication Testing', () => {
 
@@ -42,25 +42,25 @@ describe('Registration and Authentication Testing', () => {
     })
 
 
-    describe('Register with a valid payload', () => {
-        it("It should return status 201", (done) => {
-            const payload = {
-                name: "Liam",
-                username: "member",
-                password: "1234"
-            }
-            chai.request(app)
-                .post('/members/register')
-                .send(payload)
-                .end((error, response) => {
-                    response.should.have.status(201)
-                    response.body.should.be.a('object')
-                    expect(response.body.status).to.equal(true)
-                })
+    // describe('Register with a valid payload', () => {
+    //     it("It should return status 201", (done) => {
+    //         const payload = {
+    //             name: "Liam",
+    //             username: "member",
+    //             password: "1234"
+    //         }
+    //         chai.request(app)
+    //             .post('/members/register')
+    //             .send(payload)
+    //             .end((error, response) => {
+    //                 response.should.have.status(201)
+    //                 response.body.should.be.a('object')
+    //                 expect(response.body.status).to.equal(true)
+    //             })
 
-            done()
-        })
-    })
+    //         done()
+    //     })
+    // })
 
 
     describe('Login with a valid password', () => {
@@ -120,6 +120,7 @@ describe('Actions on Savings Testing', () => {
     })
 
     it('FAILs to save,as expected beacuse of the date', (done) => {
+        
         const payload = {
             "amount": 100,
             "narration": "Savings Narration",
